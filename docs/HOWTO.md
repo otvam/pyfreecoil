@@ -5,6 +5,8 @@
 * [conda.yaml](conda.yaml) - Definition of the conda environment used to install the dependencies.
 * [run_trace.py](run_trace.py) - Utils for analysing and reproducing failures with traceback files. 
 * [run_manage.py](run_manage.py) - Utils for managing the content of the PostgreSQL database.
+
+* [docs](docs) - Folder the documentation and the images.
 * [config](config) - Folder containing all the user-defined parameters.
 * [pyfreecoil](pyfreecoil) - Folder with the shape optimization code.
 * [pypostproc](pypostproc) - Folder with utils to export/plot geometries.

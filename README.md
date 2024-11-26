@@ -15,8 +15,17 @@ This repository contains the **source code** related to the following **paper**:
 
 ## Documentation
 
-* [**Installation**](INSTALL.md)
-* [**Getting Started**](HOWTO.md)
+* [**Installation**](docs/INSTALL.md)
+* [**Getting Started**](docs/HOWTO.md)
+
+## Examples
+
+![Spiral](docs/example_1.png)
+![Solenoid](docs/example_2.png)
+
+## Worflow
+
+![Workflow](docs/workflow.png)
 
 ## Author
 
