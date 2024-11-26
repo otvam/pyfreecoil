@@ -222,7 +222,7 @@ def get_param(config, shape, parallel):
 
         # dataset generation options
         data_sweep = {
-            "n_run": int(10e3),  # number of random geometries to be generated
+            "n_run": 1000,  # number of random geometries to be generated
             "cond_gen": 0.0,  # constraint threshold for generating valid random geometries
             "cond_solve": 0.0,  # constraint threshold for solving a design after applying the design rules
             "obj_keep": 0.6,  # objective function threshold for writing the designs in the database

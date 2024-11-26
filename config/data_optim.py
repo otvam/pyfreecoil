@@ -168,15 +168,15 @@ def _get_data_filter(seed, solver):
         n_ripple = 1
         n_rand = 1
     elif solver in ["pygad", "diffevo"]:
-        n_obj = 200
-        n_eta = 50
-        n_ripple = 50
+        n_obj = 100
+        n_eta = 25
+        n_ripple = 25
         n_rand = 100
     elif solver in ["nevergrad", "optuna"]:
-        n_obj = 2000
-        n_eta = 500
-        n_ripple = 500
-        n_rand = 1000
+        n_obj = 500
+        n_eta = 100
+        n_ripple = 100
+        n_rand = 200
     else:
         raise ValueError("invalid cost")
 
