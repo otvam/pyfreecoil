@@ -18,12 +18,11 @@ This repository contains the **source code** related to the following **paper**:
 * [**Installation**](docs/INSTALL.md)
 * [**Getting Started**](docs/HOWTO.md)
 
-## Examples
+## Optimized Inductors
 
-![Spiral](docs/example_1.png)
-![Solenoid](docs/example_2.png)
+![Gallery](docs/gallery.png)
 
-## Worflow
+## Optimization Workflow
 
 ![Workflow](docs/workflow.png)
 

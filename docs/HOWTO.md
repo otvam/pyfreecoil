@@ -2,33 +2,33 @@
 
 ## Main Files and Folders
 
-* [conda.yaml](conda.yaml) - Definition of the conda environment used to install the dependencies.
-* [run_trace.py](run_trace.py) - Utils for analysing and reproducing failures with traceback files. 
-* [run_manage.py](run_manage.py) - Utils for managing the content of the PostgreSQL database.
+* `conda.yaml` - Definition of the conda environment used to install the dependencies.
+* `run_trace.py` - Utils for analysing and reproducing failures with traceback files. 
+* `run_manage.py` - Utils for managing the content of the PostgreSQL database.
 
-* [docs](docs) - Folder the documentation and the images.
-* [config](config) - Folder containing all the user-defined parameters.
-* [pyfreecoil](pyfreecoil) - Folder with the shape optimization code.
-* [pypostproc](pypostproc) - Folder with utils to export/plot geometries.
+* `docs` - Folder the documentation and the images.
+* `config` - Folder containing all the user-defined parameters.
+* `pyfreecoil` - Folder with the shape optimization code.
+* `pypostproc` - Folder with utils to export/plot geometries.
 
-* [run_0_single.py](run_0_single.py) 
+* `run_0_single.py`
     * Script for computing a single inductor design.
     * The design geometry are user-defined. 
     * Save the results (data, log, and plots) into files.
-* [run_1_dataset.py](run_1_dataset.py)
+* `run_1_dataset.py`
     * Script for generating a dataset with many designs.
     * Random inductor designs can be used.
     * User-specified inductor designs can be used.
     * The results are written into a SQL database.
-* [run_2_optim.py](run_2_optim.py)
+* `run_2_optim.py`
     * Script for optimizing inductor designs (shape optimization).
     * The initial design pool is taken from a SQL database.
     * The results are written into a SQL database.
-* [run_3_export.py](run_3_export.py)
+* `run_3_export.py`
     * Script for retrieving and exporting inductor designs.
     * Query the designs from the SQL database.
     * Write the designs into a dataset file.
-* [run_4_eval.py](run_4_eval.py)
+* `run_4_eval.py`
     * Script for computing a single inductor design.
     * Load the design from an exported dataset.
     * Save the results (data, log, and plots) into files.
