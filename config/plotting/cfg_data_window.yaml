@@ -1,0 +1,9 @@
+# PyPEEC options for the rendering windows.
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+"show_menu": false                  # show (or not) the window menu
+"image_size": [800, 600]            # initial window size, silent renderer, null for default
+"window_size": [800, 600]           # initial window size, Qt renderer, null for default
+"notebook_size": [800, 600]         # initial window size, Jupyter renderer, null for default

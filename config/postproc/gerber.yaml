@@ -1,0 +1,19 @@
+# Configuration for the GERBER export.
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+# gerber export options
+#   - first the offset is applied to original coordinates
+#   - second the scaling is done (default unit for GERBER is mm)
+"options":
+    "offset_x": +1.0e-3
+    "offset_y": -1.0e-3
+    "scaling": 25.0e+3
+
+# layer stack description (layer name and layer indices)
+"stack_dict":
+    "bot": [[0]]
+    "top": [[4]]
+    "mid": [[2]]
+    "via": [[1], [3], [1, 2, 3]]

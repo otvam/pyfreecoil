@@ -1,0 +1,100 @@
+# Parameters used to generate random inductor geometries.
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+# limits used for the partial design rule checks
+"limits":
+    # minimum angle between trace segments
+    "angle_min": 40.0
+
+    # minimum length of the trace segments
+    "segment_min": 100.0e-6
+
+# parameters used for the partial design rule checks
+"bounds":
+    # array of coordinates with the component outline limits
+    "outline": !sub "OUTLINE"
+
+    # array of coordinates with the keepout area (holes)
+    "keepout": !sub "KEEPOUT"
+
+    # number of nodes and traces that can be located outside the specified component outline
+    #   - can be used for both the source and the sink terminals
+    #   - this is used to have fixed terminals located outside the outline
+    "n_mask_src": !sub "N_MASK_SRC"
+    "n_mask_sink": !sub "N_MASK_SINK"
+
+# parameters describing the inductor geometry
+"geometry":
+    # bounds for generating the coordinates of the nodes
+    "x_min": -0.5e-3
+    "x_max": +0.5e-3
+    "y_min": -0.5e-3
+    "y_max": +0.5e-3
+
+    # bounds for generating the trace widths
+    "width_min": 80.0e-6
+    "width_max": 380.0e-6
+
+    # list of layers used for the traces
+    "layer_list": !sub "LAYER_LIST"
+
+    # size of the (partially or totally) constrained terminals (source and sink)
+    "n_add_src": !sub "N_ADD_SRC"
+    "n_add_sink": !sub "N_ADD_SINK"
+
+    # position of the (partially or totally) constrained terminals (source and sink)
+    #   - specify the node coordinates, the trace widths, and the layers
+    #   - the dimension of the elements should match the aforementioned terminal sizes
+    "src_geom": !sub "SRC_GEOM"
+    "sink_geom": !sub "SINK_GEOM"
+
+# parameters describing the random geometry generation
+"generator":
+    # minimum and maximum size of the generated designs
+    #   - the design size is including the size of the terminals (source and sink)
+    #   - for each design, the size is randomly selected between these bounds
+    "n_wdg_min": !sub "N_WDG_MIN"
+    "n_wdg_max": !sub "N_WDG_MAX"
+
+    # method used to generate the random geometries
+    #   - "single" generates fully random design (ignoring the design rules)
+    #   - "iter" generates random design generating iteratively (integrating the design rules)
+    "method": "iter"
+
+    # number of trials before changing the design size
+    #   - select randomly a size for the geometry
+    #   - make the given number of trials to find a valid geometry
+    #   - if not successful, select a new design size
+    #   - prevent the generator to end up in a deadlock
+    #   - only used for the "iter" generation method
+    "n_iter_reset": 300
+
+    # number of trials used for the initial design ("iter" method)
+    #   - make the given number of trials to find an initial design
+    #   - if not successful, abort the iterative process
+    #   - prevent the generator to end up in a deadlock
+    #   - only used for the "iter" generation method
+    "n_iter_init": 500
+
+    # number of trials used during the iterative construction ("iter" method)
+    #   - make the given number of trials to increase the design size
+    #   - if not successful, abort the iterative process
+    #   - prevent the generator to end up in a deadlock
+    #   - only used for the "iter" generation method
+    "n_iter_tree": 500
+
+    # number of allowed failure during recursive construction ("iter" method)
+    #   - allow a given number of failure during the tree generation
+    #   - if not successful, abort the iterative process
+    #   - prevent the generator to end up in a deadlock
+    #   - only used for the "iter" generation method
+    "n_iter_fail": 1
+
+    # minimum and maximum size before starting the iterative construction
+    #   - determine the initial design size before the starting the iterative generation
+    #   - for each design, the size is randomly selected between these bounds
+    #   - only used for the "iter" generation method
+    "n_init_min": 3
+    "n_init_max": 5

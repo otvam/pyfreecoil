@@ -1,0 +1,167 @@
+# Parameters for specifying the inductor parameters.
+#   - geometrical parameters
+#   - parameters for the design rules
+#   - PyPEEC mesher parameters
+#   - PyPEEC solver parameters
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+# array of coordinates with the component outline limits
+"outline": !sub "OUTLINE"
+
+# array of coordinates with the keepout area (holes)
+"keepout": !sub "KEEPOUT"
+
+# list with the different layers and the corresponding thickness
+"position": [24.0e-6, 144.0e-6, 24.0e-6, 144.0e-6, 24.0e-6]
+
+# voxel size (x, y, and, z) for the mesher
+"voxel": [12.0e-6, 12.0e-6, 12.0e-6]
+
+# parameters for the mesher
+#   - cz: coordinates of the voxel structure center for the z direction  (null for centering)
+#   - simplify: tolerance for simplifying the shapes (null for disabling simplification)
+#   - construct: grid size for constructing the shapes (null for default grid size)
+#   - xy_min: array with the lower corner coordinates of the voxel structure (null for default)
+#   - xy_max: array with the upper corner coordinates of the voxel structure (null for default)
+"mesh":
+    "cz": null
+    "simplify": null
+    "construct": null
+    "xy_min": null
+    "xy_max": null
+
+# parameters for describing the trace and via shapes
+#   - via_pad: additional size of a pad compared to the trace width
+#   - via_clear: clearance between the pad and the via diameters
+#   - via_plate: platting thickness for the vias
+#   - via_min: minimum via hole (filled vias if smaller)
+#   - via_hole: boolean determining if the all the vias are filled
+"size":
+    "via_pad": 0.0e-6
+    "via_clear": 12.0e-6
+    "via_plate": 24.0e-6
+    "via_min": 24.0e-6
+    "via_hole": true
+
+# tolerance for building and simplify shapely object
+#   - simplify: tolerance for simplifying the shapes
+#   - construct: grid size for constructing the shapes
+"shapely":
+    "simplify": 0.1e-6
+    "construct": 0.1e-6
+
+# number of nodes and traces that can be located outside the specified component outline
+#   - can be used for both the source and the sink terminals
+#   - this is used to have fixed terminals located outside the outline
+"terminal":
+    "n_mask_src": !sub "N_MASK_SRC"
+    "n_mask_sink": !sub "N_MASK_SINK"
+
+# definition of the solver parameters
+"excitation":
+    # definition of the voltage source/sink values
+    #   - V_src: voltage of the sources (source is positive, sink is negative)
+    #   - R_src: resistive part of the source inner impedances
+    #   - L_src: inductive part of the source inner impedances
+    "src":
+        "V_src": 1.0
+        "R_src": 50.0e-3
+        "L_src": 5.0e-9
+
+    # definition of the material parameters
+    #   - rho_re: real part of the winding resistivity
+    #   - rho_im: imaginary part of the winding resistivity
+    "mat":
+        "rho_re": 1.724e-8
+        "rho_im": 0.000e-8
+
+    # frequency vector for the solver sweep
+    #   - for the "DC problem", a very low frequency is selected
+    #   - for the "AC problem", the ripple frequency is selected
+    #   - the frequency should be non-zero (induced voltage extraction)
+    "f_vec": [
+        0.1e+6,
+        40.68e+6,
+    ]
+
+# point cloud used for the evaluation of the magnetic near-field
+#   - x_vec: define the point cloud for the x-direction
+#   - y_vec: define the point cloud for the x-direction
+#   - z_min: z-coordinate of the plane located below the component
+#   - z_max: z-coordinate of the plane located above the component
+"cloud":
+    "x_vec": {"v_min": -1.0e-3, "v_max": +1.0e-3, "n": 15}
+    "y_vec": {"v_min": -1.0e-3, "v_max": +1.0e-3, "n": 15}
+    "z_min": -0.5e-3
+    "z_max": +0.5e-3
+
+# parameters for field post-processing
+#   - H_qtl: quantile for the evaluation of the magnetic near-field on the point cloud
+#   - J_pwr: p-norm value for evaluating the current density inside the conductors
+#   - R_fact: frequency-dependent correction factor for the resistance
+#   - L_fact: frequency-dependent correction factor for the inductance
+#   - H_fact: frequency-dependent correction factor for the magnetic field
+#   - J_fact: frequency-dependent correction factor for the current density
+"processing":
+    "H_qtl": 0.99
+    "J_pwr": 2.0
+    "R_fact": [1.0, 1.0]
+    "L_fact": [1.0, 1.0]
+    "H_fact": [1.0, 1.0]
+    "J_fact": [1.0, 1.0]
+
+# parameters used for the full design rule checks
+"design_rule":
+    # limits for the different design rules
+    #   - boundary: scaling constant for outline limit violations
+    #   - clearance: bounds for the clearance distance between shapes
+    #   - distance: bounds for the clearance within a trace
+    #   - angle: bounds for the angle between trace segments
+    #   - width: bounds for the trace widths
+    #   - length: bounds for the trace lengths
+    #   - radius: bounds for the trace curvature radius in degree (local overage)
+    #   - diff: bounds for the relative trace width variation (local overage)
+    "limit_val":
+        "boundary": 100.0e-6
+        "clearance": [30.0e-6, null]
+        "distance": [30.0e-6, null]
+        "angle": [50.0, 360.0]
+        "width": [80.0e-6, 380.0e-6]
+        "length": [50.0e-6, null]
+        "radius": [null, 180.0]
+        "diff": [null, 1.0]
+
+    # bounds for clamping the design rule results
+    #   - for each rule, the result is scaled with respect to the bounds
+    #   - afterward, the scaling results is clamped between these bounds
+    #   - negative values are respecting constraints
+    #   - positive values are violating constraints
+    "valid_clamp":
+        "bnd_min": -1.0
+        "bnd_max": +1.0
+
+    # options for computing the clearance within a trace
+    #   - size_min: minimum size for the resampled trace
+    #   - dis_resample: resampling distance for the trace
+    #   - tol_angle: minimum angle in degree for the trace curvature
+    #   - tol_add: additional tolerance for computing the clearance
+    "distance_options":
+        "size_min": 5
+        "dis_resample": 10.0e-6
+        "tol_angle": 50.0
+        "tol_add": 100.0e-6
+
+    # options for resampling traces and computing local averages
+    #   - size_min: minimum size for the resampled trace
+    #   - dis_resample: resampling distance for the trace
+    #   - length_min: minimum trace length for computing local average
+    #   - dis_average: distance for computing the local average
+    #   - window_conv: convolution window for the local average
+    "average_options":
+        "size_min": 5
+        "dis_resample": 10.0e-6
+        "length_min": 25.0e-6
+        "dis_average": 150.0e-6
+        "window_conv": "boxcar"

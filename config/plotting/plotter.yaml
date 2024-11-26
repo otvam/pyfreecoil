@@ -1,0 +1,106 @@
+# PyPEEC options for the plotter renderings.
+#
+# A plot is described with a dictionary with the following fields:
+#   - framework: framework used for the rendering ("pyvista" or "matplotlib")
+#   - layout: string describing the plot type (see description below)
+#   - title: title of the plot window
+#   - data_window: dictionary describing the plot window
+#   - data_options: dictionary describing the plot options
+#   - data_plot: dictionary describing the plot content
+#
+# For the plotter, the following types of plots are available:
+#
+#   - "material": plot the different materials composing the voxel structures
+#       - title: title located at the corner of the plot (null for hiding)
+#       - color_electric: color of the electric domains
+#       - color_magnetic: color of the magnetic domains
+#       - color_electromagnetic: color of the electromagnetic domains
+#       - color_current_source: color of the current source domains"
+#       - color_voltage_source: color of the voltage source domains
+#
+#   - "norm_voxel": plot a scalar norm variable on the voxel structure
+#   - "norm_point": plot a scalar norm variable on the point cloud
+#       - title: title located at the corner of the plot (null for hiding)
+#       - legend: legend of variable being shown with the color axis (null for hiding)
+#       - var: name of the scalar norm variable to be plotted
+#       - scale: scaling of the variable (scaling is done first)
+#       - log: use (or not) a log scale for the color axis
+#       - color_lim: limit range for the color axis (null for complete range)
+#       - clamp_lim: clamping range for the color axis (null for complete range)
+#       - filter_lim: hide voxels/points with values outside this range (null for complete range)
+#       - point_size: size of the marker used for plotting on the point cloud
+#
+#   - "phasor_voxel": plot a scalar phasor variable on the voxel structure
+#   - "phasor_point": plot a scalar phasor variable on the point cloud
+#       - title: title located at the corner of the plot (null for hiding)
+#       - legend: legend of variable being shown with the color axis (null for hiding)
+#       - var: name of the scalar phasor variable to be plotted
+#       - phase: phase to be considered for the phasor (in radian)
+#       - scale: scaling of the variable (scaling is done first)
+#       - log: use (or not) a log scale for the color axis
+#       - color_lim: limit range for the color axis (null for complete range)
+#       - clamp_lim: clamping range for the color axis (null for complete range)
+#       - filter_lim: hide voxels/points with values outside this range (null for complete range)
+#       - point_size: size of the marker used for plotting on the point cloud
+#
+#   - "arrow_voxel": plot a vector phasor variable on the voxel structure (arrow plot)
+#   - "arrow_point": plot a vector phasor variable on the point cloud (arrow plot)
+#       - title: title located at the corner of the plot (null for hiding)
+#       - legend: legend of variable being shown with the color axis (null for hiding)
+#       - var: name of the vector phasor variable to be plotted
+#       - phase: phase to be considered for the phasor (in radian)
+#       - scale: scaling of the variable (scaling is done first)
+#       - log: use (or not) a log scale for the color axis
+#       - color_lim: limit range for the color axis (null for complete range)
+#       - clamp_lim: clamping range for the color axis (null for complete range)
+#       - filter_lim: hide arrows with scalar values outside this range (null for complete range)
+#       - arrow_threshold: relative threshold for hiding arrows with small scalar values
+#       - arrow_scale: relative arrow length (with respect to the voxel size)
+#
+#   - "convergence": plot the convergence of the iterative matrix solver (matplotlib)
+#       - color_active: color of the plot for the active power
+#       - color_reactive: color of the plot for the reactive power
+#       - marker: plot marker size
+#       - width: line line width
+#
+#   - "convergence": plot the solver residuum histogram (matplotlib)
+#       - n_bins: number of bins
+#       - tol_bins: relative tolerance for the bin boundaries
+#       - bar_color: fill color of the bins
+#       - edge_color: "edge color of the bins
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+"J_c_norm":
+    "framework": "pyvista"
+    "layout": "norm_voxel"
+    "title": "Current Density"
+    "data_window": !include cfg_data_window.yaml
+    "data_options": !include cfg_data_pyvista.yaml
+    "data_plot":
+        "title": null
+        "legend": "J_c"
+        "var": "J_c"
+        "scale": 1.0e-6
+        "log": false
+        "color_lim": null
+        "clamp_lim": null
+        "filter_lim": null
+        "point_size": 10.0
+"H_norm":
+    "framework": "pyvista"
+    "layout": "norm_point"
+    "title": "Mag. Field Norm"
+    "data_window": !include cfg_data_window.yaml
+    "data_options": !include cfg_data_pyvista.yaml
+    "data_plot":
+        "title": null
+        "legend": "H_p"
+        "var": "H_p"
+        "scale": 1.0
+        "log": false
+        "color_lim": null
+        "clamp_lim": null
+        "filter_lim": null
+        "point_size": 10.0

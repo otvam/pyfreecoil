@@ -1,0 +1,60 @@
+# Parameters used to compute the converter operation:
+#   - computation of the waveforms
+#   - computation of the losses
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+# frequencies used to extract the DC and AC inductor properties
+"frequency":
+  "f_dc": 0.1e+6
+  "f_ac": 40.68e+6
+
+# converter operating parameters
+#   - f_mag: frequency of the inductor ripple
+#   - I_out: output DC current
+#   - V_out: output DC voltage
+#   - V_in: input DC voltage
+"operation":
+  "f_mag": 40.68e+6
+  "V_out": 0.8
+  "V_in": 3.3
+  "P_out": !sub "P_OUT"
+
+# additional loses (external series resistance and loss offset)
+"external":
+  "R_ext": 2.0e-3
+  "P_cst": 10.0e-3
+
+# converter topology parameters
+#   - n_stack_2l: number of stacked transistors per switch (two-level topology)
+#   - n_stack_3l: number of stacked transistors per switch (three-level topology)
+#   - R_on_sp: specific on-resistance for the switches (per area)
+#   - E_gg_sp: specific switching energy for the switches (per area)
+#   - alpha_R_sp: scaling exponent for the on-resistance (switch stacking)
+#   - alpha_E_sp: scaling exponent for the switching energy (switch stacking)
+#   - multi_level: boolean for the topology (true for three-level / false for two-level)
+#   - force_ccm: boolean for the modulation (true for forcing CCM / false for allowing DCM)
+"topology":
+  "n_stack_2l": 2.0
+  "n_stack_3l": 1.0
+  "R_on_sp": 450.0e-12
+  "E_gg_sp": 14.22e-3
+  "alpha_R_sp": 2.0
+  "alpha_E_sp": 0.0
+  "multi_level": !sub "MULTI_LEVEL"
+  "force_ccm": !sub "FORCE_CCM"
+
+# limits for the operating parameters (penalties when violated)
+#   - J_dc_max: upper limit for the DC current density in the winding
+#   - J_ac_max: upper limit for the AC current density in the winding
+#   - A_sw_max: upper limit for the total semiconductor chip area
+#   - ripple_pkpk_max: upper limit for the peak-to-peak ripple
+#   - H_dc_max: upper limit for the DC magnetic field on the point cloud
+#   - H_ac_max: upper limit for the AC magnetic field on the point cloud
+"scale":
+  "A_sw_max": 8.0e-7
+  "J_tot_max": 1000.0e+6
+  "ripple_pkpk_max": 3.0
+  "H_dc_max": !sub "H_DC_MAX"
+  "H_ac_max": !sub "H_AC_MAX"

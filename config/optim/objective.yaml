@@ -1,0 +1,28 @@
+# Parameters used to compute the constraint and objective functions.
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+# constraint value parameters
+#   - cond_max: upper bound to the constraint value (used in case of failure)
+#   - cond_scale: scaling factor for the constraint value (applied to the design rules)
+"cond_max": 10.0
+"cond_scale": 1.0
+
+# combine the loss and penalty vectors into a score value
+#   - loss_scale: scaling vector for the loss vector (loss components)
+#   - penalty_scale: scaling vector for the penalty vector (limit violations)
+"loss_scale": 1.0
+"penalty_scale": 0.5
+
+# compute the first term of the objection function (design rule violations)
+#   - validity_max: upper bound for the validity value (used in case of failure)
+#   - validity_scale: scaling factor for the validity value (applied to the design rules)
+"validity_max": 2.0
+"validity_scale": 0.5
+
+# compute the second term of the objection function (score value)
+#   - score_max: upper bound to the score value (used in case of failure)
+#   - score_scale: scaling factor for the score value (applied to the score value)
+"score_max": 2.0
+"score_scale": 1.0

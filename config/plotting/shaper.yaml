@@ -1,0 +1,47 @@
+# Plot options for the 2D plot rendering.
+#
+# Shared parameters between all the plots: "param_shared":
+#   - scl_shape: scalar scaling factor for the object size
+#   - color_outline: color description for the component outline limits
+#
+# Plot parameters for the shapes and the masks: "param_mask":
+#   - color_obj: color description for the shapes
+#   - color_mask: color description for the mask
+#
+# Plot parameters for the conductors and the terminals: "param_terminal":
+#   - color_conductor: color description for the conductors
+#   - color_terminal: color description for the terminals
+#
+# Plot parameters for the different shapes and layers: "param_shape":
+#   - layer_def: dictionary defining the layer names and indices
+#   - shape_color: dictionary defining the color description for the 2D shapes
+#   - line_color: dictionary defining the color description for the 1D lines
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+"param_shared":
+    "scl_shape": 1000.0
+    "color_outline": {"face": [1.0, 1.0, 1.0, 1.0], "edge": "black", "line": 2.0}
+"param_mask":
+    "color_obj": {"face": [1.0, 0.0, 0.0, 0.1], "edge": "black", "line": 1.0}
+    "color_mask": {"face": [0.0, 1.0, 0.0, 0.1], "edge": "black", "line": 1.0}
+"param_terminal":
+    "color_conductor": {"face": [0.0, 1.0, 0.0, 0.1], "edge": "black", "line": 1.0}
+    "color_terminal": {"face": [0.0, 0.0, 1.0, 0.1], "edge": "black", "line": 1.0}
+"param_shape":
+    "layer_def":
+        "bot": [[4]]
+        "top": [[0]]
+        "mid": [[2]]
+        "via": [[1], [3], [1, 2, 3]]
+    "shape_color":
+        "bot": {"face": [1.0, 0.0, 0.0, 0.1], "edge": "black", "line": 1.0}
+        "top": {"face": [0.0, 1.0, 0.0, 0.1], "edge": "black", "line": 1.0}
+        "mid": {"face": [0.0, 0.0, 1.0, 0.1], "edge": "black", "line": 1.0}
+        "via": {"face": [0.0, 0.0, 0.0, 0.1], "edge": "black", "line": 1.0}
+    "line_color":
+        "bot": {"color": [1.0, 0.0, 0.0], "width": 1.0}
+        "top": {"color": [0.0, 1.0, 0.0], "width": 1.0}
+        "mid": {"color": [0.0, 0.0, 1.0], "width": 1.0}
+        "via": {"color": [0.0, 0.0, 0.0], "width": 1.0}

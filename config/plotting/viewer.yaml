@@ -1,0 +1,52 @@
+# PyPEEC options for the viewer renderings.
+#
+# A plot is described with a dictionary with the following fields:
+#   - framework: framework used for the rendering ("pyvista" or "matplotlib")
+#   - layout: string describing the plot type (see description below)
+#   - title: title of the plot window
+#   - data_window: dictionary describing the plot window
+#   - data_options: dictionary describing the plot options
+#   - data_plot: dictionary describing the plot content
+#
+# For the viewer, the following types of plots are available:
+#
+#   - "domain": plot the different domains composing the voxel structures
+#       - title: title located at the corner of the plot (null for hiding)
+#       - colormap: colormap used to plot the different voxel groups
+#       - opacity: opacity of the face color
+#
+#   - "graph": plot the connections between the voxels
+#       - title: title located at the corner of the plot (null for hiding)
+#       - colormap: colormap used to plot the different voxel groups
+#       - opacity: opacity of the face color
+#
+#   - "mesh": plot the deviation between the voxelized and reference geometries
+#       - title: title located at the corner of the plot (null for hiding)
+#       - color_voxel: face color for the voxelized structure
+#       - color_reference: face color for the reference structure
+#       - opacity_voxel: face opacity for the voxelized structure
+#       - opacity_reference: face opacity for the reference structure
+#
+# Thomas Guillod - Dartmouth College
+# Mozilla Public License Version 2.0
+
+"domain":
+    "framework": "pyvista"
+    "layout": "domain"
+    "title": "Domain"
+    "data_window": !include cfg_data_window.yaml
+    "data_options": !include cfg_data_pyvista.yaml
+    "data_plot":
+        "title": null
+        "colormap": "Accent"
+        "opacity": 1.0
+"graph":
+    "framework": "pyvista"
+    "layout": "graph"
+    "title": "Graph"
+    "data_window": !include cfg_data_window.yaml
+    "data_options": !include cfg_data_pyvista.yaml
+    "data_plot":
+        "title": null
+        "colormap": "Accent"
+        "opacity": 1.0
