@@ -1,0 +1,20 @@
+# remove Python object
+*.pyc
+*.pyo
+**/__pycache__
+
+# exclude data folders
+data_eval/*
+data_export/*
+data_postproc/*
+
+# exclude special folders
+scratch/*
+slurm/*
+trace/*
+
+# exclude database passwords
+config/private.ini
+
+# exclude the PyCharm project
+.idea/*
