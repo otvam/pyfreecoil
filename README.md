@@ -17,7 +17,6 @@ This repository contains the **source code** related to the following **paper**:
 
 * [**Installation**](docs/INSTALL.md)
 * [**Getting Started**](docs/HOWTO.md)
-* [**PyPEEC 3D Solver**](https://pypeec.otvam.ch)
 
 ## Optimized Inductors
 
@@ -40,6 +39,7 @@ PyFreeCoil was created at **Dartmouth College** by the research group of **Prof.
 * Dartmouth College, NH, USA: https://dartmouth.edu
 * Dartmouth Engineering: https://engineering.dartmouth.edu
 * NSF/PMIC: https://pmic.engineering.dartmouth.edu
+* PyPEEC 3D Solver: https://pypeec.otvam.ch
 
 ## Copyright
 
