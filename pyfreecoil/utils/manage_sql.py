@@ -1,6 +1,10 @@
 """
 Module for managing the PostgreSQL database.
-This code is assuming good faith usage (SQL injection).
+
+The database consists of two tables:
+    - the "study" table contains the design categories
+    - the "design" table contains the actual designs
+    - both tables linked with a foreign key
 """
 
 __author__ = "Thomas Guillod"
@@ -9,6 +13,7 @@ __license__ = "Mozilla Public License Version 2.0"
 
 import time
 import psycopg2
+import psycopg2.sql
 import psycopg2.extras
 import pandas as pd
 import numpy as np
@@ -180,7 +185,7 @@ class _PostgreSql:
 
     def get_credential(self):
         """
-        Get the credential for the PostreSQL command line utils.
+        Get the credential for the PostgreSQL command line utils.
         """
 
         # command line options for the server
@@ -217,7 +222,7 @@ class _PostgreSql:
             psycopg2.extras.execute_batch(cursor, cmd, param)
 
     @_retry_fail
-    def _run_fetch(self, cmd, param):
+    def run_fetch(self, cmd, param):
         """
         Run a SQL command and fetch all the results.
         """
@@ -271,136 +276,39 @@ class ManageSql:
 
         self.sql.close()
 
-    def _get_sql_query(self, query):
+    def _get_query_table(self, cmd):
         """
-        SQL filters for fetching designs.
-        """
-
-        # extract
-        name_list = query["name_list"]
-        limit = query["limit"]
-        offset = query["offset"]
-        random = query["random"]
-
-        # SQL parameters
-        param = []
-
-        # parse filter study name
-        if name_list:
-            cmd_name = f"study_id in (SELECT study_id FROM {self.study} WHERE name in %s)"
-            param.append(tuple(name_list))
-        else:
-            cmd_name = "TRUE"
-
-        # parse limit directive
-        if limit:
-            cmd_limit = "LIMIT %s"
-            param.append(limit)
-        else:
-            cmd_limit = "LIMIT ALL"
-
-        # parse offset directive
-        if offset:
-            cmd_offset = "OFFSET %s"
-            param.append(offset)
-        else:
-            cmd_offset = "OFFSET NULL"
-
-        # assemble command
-        if random:
-            cmd = f"{cmd_name} ORDER BY RANDOM() {cmd_limit} {cmd_offset}"
-        else:
-            cmd = f"{cmd_name} {cmd_limit} {cmd_offset}"
-
-        return cmd, param
-
-    def _get_sql_get(self, name):
-        """
-        SQL filters for fetching designs.
+        Format a SQL query (replace table names and design variable names.
         """
 
-        # SQL parameters
-        param = [name]
+        # SQL commands for creating the table
+        var_type = []
 
-        # parse filter study name
-        cmd = f"study_id in (SELECT study_id FROM {self.study} WHERE name = %s)"
+        # SQL command with the variable names
+        var_name = []
 
-        return cmd, param
+        # SQL command with variable placeholders
+        var_insert = []
 
-    def _get_cmd_get_design(self, name):
-        """
-        Construct a SQL query for fetching designs.
-        """
+        # find design variable substitution
+        for (var_name_tmp, var_type_tmp) in self.var_sql:
+            var_type.append(psycopg2.sql.SQL("{var_name_tmp} {sql_type_tmp} NOT NULL").format(
+                var_name_tmp=psycopg2.sql.Identifier(var_name_tmp.lower()),
+                sql_type_tmp=psycopg2.sql.SQL(_get_sql_type(var_type_tmp))
+            ))
+            var_name.append(psycopg2.sql.Identifier(var_name_tmp.lower()))
+            var_insert.append(psycopg2.sql.Placeholder())
 
-        # init design variables
-        var = []
-
-        # find design variables
-        for (var_name, var_type) in self.var_sql:
-            var.append(var_name)
-
-        # assemble design variables
-        var = ", ".join(var)
-
-        # get design filter command and parameters
-        (cmd, param) = self._get_sql_get(name)
-
-        # assemble command
-        cmd = f"(SELECT design_id, study_id, {var} FROM {self.design} WHERE {cmd})"
-
-        return cmd, param
-
-    def _get_cmd_get_query(self, query):
-        """
-        Construct a SQL query for fetching designs.
-        """
-
-        # init design variables
-        var = []
-
-        # find design variables
-        for (var_name, var_type) in self.var_sql:
-            var.append(var_name)
-
-        # assemble design variables
-        var = ", ".join(var)
-
-        # get design filter command and parameters
-        (cmd, param) = self._get_sql_query(query)
-
-        # assemble command
-        cmd = f"(SELECT design_id, study_id, {var} FROM {self.design} WHERE {cmd})"
-
-        return cmd, param
-
-    def _get_cmd_add_design(self, name):
-        """
-        Construct a SQL query for inserting designs.
-        """
-
-        # init design variables
-        cmd_name = []
-        cmd_insert = []
-
-        # find design variables
-        for (var_name, var_type) in self.var_sql:
-            cmd_name.append(var_name)
-            cmd_insert.append("%s")
-
-        # assemble design variables
-        cmd_name = ", ".join(cmd_name)
-        cmd_insert = ", ".join(cmd_insert)
-
-        # assemble command
-        cmd = (
-            f"INSERT INTO {self.design}(study_id, {cmd_name})\n"
-            f"VALUES ((SELECT study_id FROM {self.study} WHERE name = %s), {cmd_insert})\n"
+        # construct the SQL query
+        cmd = psycopg2.sql.SQL(cmd).format(
+            study=psycopg2.sql.Identifier(self.study),
+            design=psycopg2.sql.Identifier(self.design),
+            var_type=psycopg2.sql.SQL(', ').join(var_type),
+            var_name=psycopg2.sql.SQL(', ').join(var_name),
+            var_insert=psycopg2.sql.SQL(', ').join(var_insert),
         )
 
-        # SQL parameters with the study name
-        param = [name]
-
-        return cmd, param
+        return cmd
 
     def _get_data_from_sql(self, data):
         """
@@ -421,13 +329,13 @@ class ManageSql:
 
         return data
 
-    def _get_data_to_sql(self, data, param_cmd):
+    def _get_data_to_sql(self, data):
         """
         Transform a Dataframe into SQL designs (serialize).
         """
 
         # SQL parameters
-        param_add = []
+        param = []
 
         # cast and serialize the design parameters
         for (var_name, var_type) in self.var_sql:
@@ -439,34 +347,32 @@ class ManageSql:
                 var = None
 
             # add value
-            param_add.append(var)
-
-        # assemble
-        param = param_cmd + param_add
+            param.append(var)
 
         return param
 
     def get_stat(self):
         """
         Get statistics about the number of studies and designs.
-        Get the total database size.
+        Get the total database and table size.
         """
 
         # get command
         cmd = (
-            f"SELECT\n"
-            f"(SELECT pg_database_size(current_database())) AS n_total_byte,\n"
-            f"(SELECT pg_total_relation_size('{self.study}')) AS n_study_byte,\n"
-            f"(SELECT pg_total_relation_size('{self.design}')) AS n_design_byte,\n"
-            f"(SELECT COUNT(*) FROM {self.study}) AS n_study,\n"
-            f"(SELECT COUNT(*) FROM {self.design}) AS n_design\n"
+            "SELECT\n"
+            "(SELECT pg_database_size(current_database())) AS n_total_byte,\n"
+            "(SELECT pg_total_relation_size('{study}')) AS n_study_byte,\n"
+            "(SELECT pg_total_relation_size('{design}')) AS n_design_byte,\n"
+            "(SELECT COUNT(*) FROM {study}) AS n_study,\n"
+            "(SELECT COUNT(*) FROM {design}) AS n_design\n"
         )
 
         # execute query
-        data = self.sql._run_fetch(cmd, [])
+        cmd = self._get_query_table(cmd)
+        data = self.sql.run_fetch(cmd, [])
 
         # extract results
-        (n_total_byte, n_study_byte, n_design_byte, n_study, n_design) = data[0]
+        (n_total_byte, n_study_byte, n_design_byte, n_study, n_design) = data.pop()
 
         # total size of the tables
         n_table_byte = n_study_byte+n_design_byte
@@ -490,14 +396,15 @@ class ManageSql:
 
         # get command
         cmd = (
-            f"SELECT {self.study}.name, COUNT({self.design}.study_id) AS count\n"
-            f"FROM {self.study}\n"
-            f"LEFT JOIN {self.design} ON {self.design}.study_id = {self.study}.study_id\n"
-            f"GROUP BY {self.study}.study_id\n"
+            "SELECT {study}.name, COUNT({design}.study_id) AS count\n"
+            "FROM {study}\n"
+            "LEFT JOIN {design} ON {design}.study_id = {study}.study_id\n"
+            "GROUP BY {study}.study_id\n"
         )
 
         # execute query
-        data = self.sql._run_fetch(cmd, [])
+        cmd = self._get_query_table(cmd)
+        data = self.sql.run_fetch(cmd, [])
 
         # extract study and number of designs
         study = {}
@@ -516,11 +423,12 @@ class ManageSql:
 
         # get command
         cmd = (
-            f"DROP TABLE IF EXISTS {self.design};\n"
-            f"DROP TABLE IF EXISTS {self.study};\n"
+            "DROP TABLE IF EXISTS {design};\n"
+            "DROP TABLE IF EXISTS {study};\n"
         )
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_cmd(cmd, [])
 
     def create_db(self):
@@ -528,35 +436,25 @@ class ManageSql:
         Create the database (study and design tables).
         """
 
-        # init design variables
-        var = []
-
-        # parse design variables
-        for (var_name, var_type) in self.var_sql:
-            sql_type = _get_sql_type(var_type)
-            var.append("%s %s NOT NULL" % (var_name, sql_type))
-
-        # assemble design variables
-        var = ", ".join(var)
-
         # get command
         cmd = (
-            f"CREATE TABLE IF NOT EXISTS {self.study} (\n"
-            f"    study_id SERIAL PRIMARY KEY,\n"
-            f"    name VARCHAR NOT NULL,\n"
-            f"    UNIQUE(name)\n"
-            f");\n"
-            f"CREATE TABLE IF NOT EXISTS {self.design} (\n"
-            f"    design_id SERIAL PRIMARY KEY,\n"
-            f"    study_id INTEGER NOT NULL,\n"
-            f"    {var},\n"
-            f"    CONSTRAINT fk\n"
-            f"        FOREIGN KEY(study_id)\n"
-            f"        REFERENCES {self.study}(study_id)\n"
-            f");\n"
+            "CREATE TABLE IF NOT EXISTS {study} (\n"
+            "    study_id SERIAL PRIMARY KEY,\n"
+            "    name VARCHAR NOT NULL,\n"
+            "    UNIQUE(name)\n"
+            ");\n"
+            "CREATE TABLE IF NOT EXISTS {design} (\n"
+            "    design_id SERIAL PRIMARY KEY,\n"
+            "    study_id INTEGER NOT NULL,\n"
+            "    {var_type},\n"
+            "    CONSTRAINT fk\n"
+            "        FOREIGN KEY(study_id)\n"
+            "        REFERENCES {study}(study_id)\n"
+            ");\n"
         )
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_cmd(cmd, [])
 
     def create_study(self, name):
@@ -570,12 +468,13 @@ class ManageSql:
 
         # get command
         cmd = (
-            f"INSERT INTO {self.study}(name)\n"
-            f"VALUES (%s)\n"
-            f"ON CONFLICT DO NOTHING\n"
+            "INSERT INTO {study}(name)\n"
+            "VALUES (%s)\n"
+            "ON CONFLICT DO NOTHING\n"
         )
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_cmd(cmd, [name])
 
     def delete_study(self, name):
@@ -589,13 +488,14 @@ class ManageSql:
 
         # get command
         cmd = (
-            f"DELETE FROM {self.design}\n"
-            f"WHERE study_id = (SELECT study_id FROM {self.study} WHERE name = %s);\n"
-            f"DELETE FROM {self.study}\n"
-            f"WHERE name = %s;\n"
+            "DELETE FROM {design}\n"
+            "WHERE study_id = (SELECT study_id FROM {study} WHERE name = %s);\n"
+            "DELETE FROM {study}\n"
+            "WHERE name = %s;\n"
         )
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_cmd(cmd, [name, name])
 
     def rename_study(self, name_old, name_new):
@@ -609,12 +509,13 @@ class ManageSql:
 
         # get command
         cmd = (
-            f"UPDATE {self.study}\n"
-            f"SET name = %s\n"
-            f"WHERE name = %s\n"
+            "UPDATE {study}\n"
+            "SET name = %s\n"
+            "WHERE name = %s\n"
         )
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_cmd(cmd, [name_new, name_old])
 
     def limit_study(self, name, limit):
@@ -628,45 +529,54 @@ class ManageSql:
 
         # get command
         cmd = (
-            f"DELETE FROM {self.design}\n"
-            f"WHERE ctid IN (\n"
-            f"    SELECT ctid\n"
-            f"    FROM {self.design}\n"
-            f"    WHERE study_id = (SELECT study_id FROM {self.study} WHERE name = %s)\n"
-            f"    OFFSET %s\n"
-            f")\n"
+            "DELETE FROM {design}\n"
+            "WHERE ctid IN (\n"
+            "    SELECT ctid\n"
+            "    FROM {design}\n"
+            "    WHERE study_id = (SELECT study_id FROM {study} WHERE name = %s)\n"
+            "    OFFSET %s\n"
+            ")\n"
         )
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_cmd(cmd, [name, limit])
 
     def add_design(self, name, data):
         """
-        Add new designs to the database.
+        Add new designs to an existing study.
         """
 
-        # get base command
-        (cmd, param_cmd) = self._get_cmd_add_design(name)
+        # get command
+        cmd = (
+            "INSERT INTO {design}(study_id, {var_name})\n"
+            "VALUES ((SELECT study_id FROM {study} WHERE name = %s), {var_insert})\n"
+        )
 
         # get the serialized parameters
         param = []
         for idx_tmp, data_tmp in data.iterrows():
-            param_tmp = self._get_data_to_sql(data_tmp, param_cmd)
-            param.append(param_tmp)
+            param_tmp = self._get_data_to_sql(data_tmp)
+            param.append([name] + param_tmp)
 
         # execute query
+        cmd = self._get_query_table(cmd)
         self.sql.run_batch(cmd, param)
 
     def get_design(self, name):
         """
-        Query designs and apply a custom function to the extracted data.
+        Get all the designs for a given study.
         """
 
-        # get command
-        (cmd, param) = self._get_cmd_get_design(name)
+        # assemble where command
+        cmd = (
+            "SELECT * FROM {design}\n"
+            "WHERE study_id in (SELECT study_id FROM {study} WHERE name = %s)\n"
+        )
 
         # execute query
-        data = self.sql._run_fetch(cmd, param)
+        cmd = self._get_query_table(cmd)
+        data = self.sql.run_fetch(cmd, [name])
 
         # deserialize
         data = self._get_data_from_sql(data)
@@ -675,14 +585,48 @@ class ManageSql:
 
     def get_query(self, query):
         """
-        Query designs and apply a custom function to the extracted data.
+        Query designs from the database (custom query).
         """
 
-        # get command
-        (cmd, param) = self._get_cmd_get_query(query)
+        # extract
+        name_list = query["name_list"]
+        limit = query["limit"]
+        offset = query["offset"]
+        random = query["random"]
+
+        # SQL parameters
+        param = []
+
+        # parse filter study name
+        cmd_name = "study_id in (SELECT study_id FROM {study} WHERE name in %s)"
+        param.append(tuple(name_list))
+
+        # parse limit directive
+        if limit:
+            cmd_limit = "LIMIT %s"
+            param.append(limit)
+        else:
+            cmd_limit = "LIMIT NULL"
+
+        # parse offset directive
+        if offset:
+            cmd_offset = "OFFSET %s"
+            param.append(offset)
+        else:
+            cmd_offset = "OFFSET NULL"
+
+        # assemble where command
+        if random:
+            cmd_order = "ORDER BY RANDOM()"
+        else:
+            cmd_order = "ORDER BY design_id"
+
+        # assemble command (injection safe)
+        cmd = "SELECT * FROM {design} WHERE %s %s %s %s" % (cmd_name, cmd_order, cmd_limit, cmd_offset)
 
         # execute query
-        data = self.sql._run_fetch(cmd, param)
+        cmd = self._get_query_table(cmd)
+        data = self.sql.run_fetch(cmd, param)
 
         # deserialize
         data = self._get_data_from_sql(data)
