@@ -80,9 +80,9 @@ def get_run(file, export_param):
     # query the dataset
     design = _get_query(data_database, data_filter)
 
-    # check validity
+    # check dataset validity
     if design.empty:
-        raise RuntimeError("design data is empty")
+        raise RuntimeError("design dataset is empty")
 
     # write the dataset
     _get_write(file, design)

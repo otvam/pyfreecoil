@@ -17,14 +17,19 @@ def get_param(config, extract):
     # get the inductor parameters
     param = data_common.get_param(config)
 
-    # filter the dataset
+    # apply a filter to a dataset
     def fct_filter(design):
         return design
 
-    # extract a design
+    # extract a single design from a dataset
     def fct_extract(design):
+        # check dataset validity
+        if design.empty:
+            raise RuntimeError("design dataset is empty")
+
+        # extract a single design
         if extract == "best":
-            # get the best design with respect to the objection function
+            # get the best design
             idx = design["obj"].idxmin()
             design = design.loc[idx]
         elif extract == "rand":
