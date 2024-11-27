@@ -5,6 +5,10 @@ The database consists of two tables:
     - the "study" table contains the design categories
     - the "design" table contains the actual designs
     - both tables linked with a foreign key
+
+For the database maintenance and backup:
+    - the PostgreSQL utils are called ("pg_restore", "pg_dump", and "vacuumdb")
+    - the credentials are passed through environment variables (not encrypted)
 """
 
 __author__ = "Thomas Guillod"
