@@ -24,7 +24,7 @@ def get_dump(data_database, filename):
     Backup the database in a file (dump).
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / dump")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -33,7 +33,7 @@ def get_dump(data_database, filename):
     LOGGER.info("dump / db")
     obj_sql.dump(filename)
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / dump")
 
 
 def get_restore(data_database, filename):
@@ -41,7 +41,7 @@ def get_restore(data_database, filename):
     Restore the database from a file (restore).
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / restore")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -50,7 +50,7 @@ def get_restore(data_database, filename):
     LOGGER.info("restore / db")
     obj_sql.restore(filename)
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / restore")
 
 
 def get_vacuum(data_database):
@@ -58,7 +58,7 @@ def get_vacuum(data_database):
     Vacuum the database.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / vacuum")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -71,7 +71,7 @@ def get_vacuum(data_database):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / vacuum")
 
 
 def get_reset(data_database):
@@ -79,7 +79,7 @@ def get_reset(data_database):
     Reset the database (delete and create).
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / reset")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -95,7 +95,7 @@ def get_reset(data_database):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / reset")
 
 
 def get_delete(data_database, name):
@@ -103,7 +103,7 @@ def get_delete(data_database, name):
     Delete a study.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / delete")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -116,7 +116,7 @@ def get_delete(data_database, name):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / delete")
 
 
 def get_create(data_database, name):
@@ -124,7 +124,7 @@ def get_create(data_database, name):
     Create a study.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / create")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -137,7 +137,7 @@ def get_create(data_database, name):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / create")
 
 
 def get_rename(data_database, name_old, name_new):
@@ -145,7 +145,7 @@ def get_rename(data_database, name_old, name_new):
     Rename a study.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / rename")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -158,7 +158,7 @@ def get_rename(data_database, name_old, name_new):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / rename")
 
 
 def get_limit(data_database, name, limit):
@@ -166,7 +166,7 @@ def get_limit(data_database, name, limit):
     Limit the number of designs for a study.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / limit")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -179,7 +179,7 @@ def get_limit(data_database, name, limit):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / limit")
 
 
 def get_import(data_database, name, file):
@@ -187,7 +187,7 @@ def get_import(data_database, name, file):
     Insert a dataset into the database.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / import")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -204,7 +204,7 @@ def get_import(data_database, name, file):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / import")
 
 
 def get_export(data_database, name, file):
@@ -212,7 +212,7 @@ def get_export(data_database, name, file):
     Export a dataset from the database.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / export")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -229,7 +229,7 @@ def get_export(data_database, name, file):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / export")
 
 
 def get_stat(data_database):
@@ -237,7 +237,7 @@ def get_stat(data_database):
     Show database statistics.
     """
 
-    LOGGER.info("====================== START: manage")
+    LOGGER.info("====================== START: manage / stat")
 
     LOGGER.info("connect")
     var_sql = manager_eval.get_var_sql()
@@ -271,4 +271,4 @@ def get_stat(data_database):
     LOGGER.info("close")
     obj_sql.close()
 
-    LOGGER.info("====================== END: manage")
+    LOGGER.info("====================== END: manage / stat")
