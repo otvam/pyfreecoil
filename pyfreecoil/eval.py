@@ -50,9 +50,10 @@ def _get_run_design(folder, data_id, data_coil, eval_param):
     scisave.write_data(os.path.join(folder, "data_valid.pck"), data_valid)
     scisave.write_data(os.path.join(folder, "data_vector.pck"), data_vector)
 
-    # check
-    LOGGER.info("mesh and solve")
+    LOGGER.info("run the PyPEEC mesher")
     data_voxel = solver.run_mesh(data_vector, data_component)
+
+    LOGGER.info("run the PyPEEC solver")
     (data_solution, data_peec) = solver.run_solve(data_voxel, data_component, data_tolerance)
 
     LOGGER.info("write results")
@@ -78,7 +79,7 @@ def _get_postproc_design(folder, design, eval_param):
     data_converter = eval_param["data_converter"]
     data_objective = eval_param["data_objective"]
 
-    LOGGER.info("compute score")
+    LOGGER.info("compute converter")
     design = manager_design.add_data_converter(design, data_converter)
 
     LOGGER.info("compute constraint")

@@ -45,9 +45,9 @@ export PYTHONDATABASE="config/private.ini"
 # export the logger configuration
 export SCILOGGER="config/scilogger.ini"
 
-# reset the database
+# reset the database and create the tables
 python run_manage.py --quiet reset
 
-# check the database status
+# check the database status (should be empty)
 python run_manage.py --quiet stat
 ```

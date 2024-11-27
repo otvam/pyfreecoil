@@ -6,7 +6,7 @@ The results are written into a SQL database.
 
 The following parallel processing model is used:
     - the optimization algorithm can be vectorized or multithreaded
-    - the vectorized or multithreaded calls are processed with multiprocessing
+    - the vectorized or multithreaded calls are computed with multiprocessing
 """
 
 __author__ = "Thomas Guillod"
