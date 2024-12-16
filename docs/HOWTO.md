@@ -3,6 +3,7 @@
 ## Main Files and Folders
 
 * `conda.yaml` - Definition of the conda environment used to install the dependencies.
+* `freeze.yaml` - Definition of the conda environment with fully frozen dependencies.
 * `run_trace.py` - Utils for analysing and reproducing failures with traceback files. 
 * `run_manage.py` - Utils for managing the content of the PostgreSQL database.
 
