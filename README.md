@@ -18,6 +18,7 @@ This repository contains the **source code** related to the following **paper**:
 * [**Installation**](docs/INSTALL.md)
 * [**Getting Started**](docs/HOWTO.md)
 * [**Paper** (IEEE copyright)](docs/paper.pdf)
+* [**Slides** (CC BY-ND 4.0)](docs/slides.pdf)
 
 ## Optimized Inductors
 
