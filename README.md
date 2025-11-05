@@ -7,6 +7,8 @@ This repository contains the **source code** related to the following **paper**:
 * **Thomas Guillod and Charles R. Sullivan**
 * **https://doi.org/10.1109/APEC48143.2025.10977326**
 * **IEEE APEC 2025**
+* [**Paper** (IEEE copyright)](docs/paper.pdf)
+* [**Slides** (CC BY-ND 4.0)](docs/slides.pdf)
 
 **PyFreeCoil** features the following **characteristics**:
 * **Free-shape optimization** of multi-layer air-core **inductors**
