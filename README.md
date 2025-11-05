@@ -6,9 +6,9 @@ This repository contains the **source code** related to the following **paper**:
 * **Free-Shape Optimization of VHF Air-Core Inductors using a Constraint-Aware Genetic Algorithm**
 * **Thomas Guillod and Charles R. Sullivan**
 * **https://doi.org/10.1109/APEC48143.2025.10977326**
-* **IEEE APEC 2025**
 * [**Paper** (IEEE copyright)](docs/paper.pdf)
 * [**Slides** (CC BY-ND 4.0)](docs/slides.pdf)
+* **IEEE APEC 2025**
 
 **PyFreeCoil** features the following **characteristics**:
 * **Free-shape optimization** of multi-layer air-core **inductors**
